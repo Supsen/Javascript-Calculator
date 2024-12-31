@@ -1,0 +1,111 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>My First Calculator</title>
+
+</head>
+<body>
+    <!-- Add two input fields for displaying the calculation result. -->
+    <div class="calculator">
+        <input type="text" id="display" class="display" disabled>
+        <input type="text" id="display_result" class="display_result" disabled>
+    </div>
+    <!-- Add buttons for Numbers and Operators -->
+    <div class="buttons">
+        <button onclick="appendNumber('7')">7</button>
+        <button onclick="appendNumber('8')">8</button>
+        <button onclick="appendNumber('9')">9</button>
+        <button class="operator" onclick="chooseOperator('/')">/</button>
+
+        <button onclick="appendNumber('4')">4</button>
+        <button onclick="appendNumber('5')">5</button>
+        <button onclick="appendNumber('6')">6</button>
+        <button class="operator" onclick="chooseOperator('*')">*</button>
+
+        <button onclick="appendNumber('1')">1</button>
+        <button onclick="appendNumber('2')">2</button>
+        <button onclick="appendNumber('3')">3</button>
+        <button class="operator" onclick="chooseOperator('-')">-</button>
+
+        <button onclick="appendNumber('0')">0</button>
+        <button onclick="appendDecimal()">.</button>
+        <button class="equal" onclick="calculateResult()">=</button>
+        <button class="operator" onclick="chooseOperator('+')">+</button>
+
+        <button class="clear" onclick="clearDisplay()">c</button>
+    </div>
+
+    <!-- Javascript Scetion -->
+    <script>
+        let currentOperand = '';
+        let expression = '';
+        let operator = null;
+
+        //Add Number to the current input and updates the display
+        function appendNumber(number){
+            currentOperand += number; // Add the clicked number to the current number
+            expression += number; // Add the clicked number to the full expression
+            updateDisplay(); // Update the display to show the full expression
+        }
+        // Adds a decimal point to the current input, ensuring no duplicates.
+        function appendDecimal(){
+            if(!currentOperand.includes('.')){ // Only add a decimal if not already included
+                currentOperand += '.'; // Add the decimal to the current operand
+                expression += '.'; // Add it to the full expression
+                updateDisplay(); // Update the display
+            }
+        }
+        // Sets the operator for the calculation
+        function chooseOperator(op){
+            if(currentOperand === '') return; // Prevents operator selection without a number
+            if(operator !== null) calculateResult(); // If there's an existing operator, calculate first
+            operator = op; // Set the operator
+            expression += ` ${op} `; // Add operator to the expression, using ${op} just for additional formatting
+            currentOperand = ''; // Reset `currentOperand` for the next number
+            updateDisplay(); // Update the display
+        }
+        // Performs the calculation based on the entered numbers and operator
+        function calculateResult(){
+            if(!operator || currentOperand === '') return; // Ensure valid operator
+            let result;
+            try {
+                result = eval(expression); // Use `eval` to compute the result
+            } catch (error){
+                alert("Invalid calculation!"); // Handle errors
+                clearDisplay(); // Reset the calculator
+                return;
+            }
+            updateResultDisplay(result); // Display the result
+            currentOperand = result.toString(); // Update `currentOperand` to the result
+            expression = currentOperand; // Reset `expression` to the result
+            updateDisplay(); // Update the display
+        }
+        // Resets all variables and clears the display
+        function clearDisplay(){
+            currentOperand = '';
+            expression = '';
+            operator = null;
+            updateDisplay();
+            clearResultDisplay();
+        }
+    
+        // Display helper functions
+        // Handle the visual updates of the calculator
+        //Updates the main display with the expression
+        function updateDisplay(){
+            document.getElementById('display').value = expression;
+        }
+        // Displays the final result in the result field
+        function updateResultDisplay(result){
+            document.getElementById('display_result').value = result;
+        }
+        // Clears the result display field
+        function clearResultDisplay(){
+            document.getElementById('display_result').value = '';
+        }
+    </script>
+</body>
+</html>
